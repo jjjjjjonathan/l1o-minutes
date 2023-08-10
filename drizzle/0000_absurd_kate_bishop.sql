@@ -7,7 +7,7 @@ END $$;
 CREATE TABLE IF NOT EXISTS "player_minutes" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"minutes" integer NOT NULL,
-	"date_played" date NOT NULL,
+	"match_id" integer NOT NULL,
 	"player_id" integer NOT NULL,
 	"team_id" integer NOT NULL
 );

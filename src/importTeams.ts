@@ -1,9 +1,8 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import * as dotenv from 'dotenv';
+import 'dotenv/config';
 import { InferModel } from 'drizzle-orm';
 import { teams } from './db/schema';
-dotenv.config();
 
 type NewTeam = InferModel<typeof teams, 'insert'>;
 
@@ -27,6 +26,7 @@ const mensTeams = [
   'FC London',
   'Darby FC',
   'Windsor City FC',
+  'ProStars FC',
   'St. Catharines Roma Wolves',
   'North Mississauga SC',
   "Master's FA",

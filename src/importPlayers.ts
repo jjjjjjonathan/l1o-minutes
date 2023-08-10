@@ -2,10 +2,9 @@ import fs from 'fs';
 import csv from 'csv-parser';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import * as dotenv from 'dotenv';
+import 'dotenv/config';
 import { InferModel } from 'drizzle-orm';
 import { players } from './db/schema';
-dotenv.config();
 
 type NewPlayer = InferModel<typeof players, 'insert'>;
 

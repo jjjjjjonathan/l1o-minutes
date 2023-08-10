@@ -24,10 +24,10 @@ export const teams = pgTable('teams', {
   division: divisionEnum('division'),
 });
 
-export const player_minutes = pgTable('player_minutes', {
+export const playerMinutes = pgTable('player_minutes', {
   id: serial('id').primaryKey(),
   minutes: integer('minutes').notNull(),
-  datePlayed: date('date_played').notNull(),
+  matchId: integer('match_id').notNull(),
   playerId: integer('player_id')
     .references(() => players.id, { onDelete: 'cascade' })
     .notNull(),
