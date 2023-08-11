@@ -56,7 +56,10 @@ const loadHtml = async (url: string) => {
         .each((_playerId, element) => {
           if (teamId % 2 === 0) {
             awayTeam.players.push({
-              name: $(element).find('td.player_name > a').text(),
+              name: $(element)
+                .find('td.player_name > a')
+                .text()
+                .replace(/^[^A-Za-z]*/, ''),
               minutes: parseInt($(element).children('td').eq(2).text(), 10),
             });
           } else {
