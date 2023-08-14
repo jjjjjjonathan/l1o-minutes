@@ -1,10 +1,8 @@
 import * as cheerio from 'cheerio';
 import axios from 'redaxios';
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
-import 'dotenv/config';
 import { InferModel, eq } from 'drizzle-orm';
 import { playerMinutes, players, teams } from './db/schema';
+import db from './db/db';
 
 type Player = {
   name: string;
@@ -19,10 +17,6 @@ type Team = {
 type DbTeam = InferModel<typeof teams, 'select'>;
 type DbPlayer = InferModel<typeof players, 'select'>;
 type NewPlayerMinutes = InferModel<typeof playerMinutes, 'insert'>;
-
-const connectionString = process.env.CONNECTION_STRING || '';
-const sql = postgres(connectionString, { max: 1 });
-const db = drizzle(sql);
 
 const url = process.argv[2];
 const loadHtml = async (url: string) => {

@@ -1,10 +1,8 @@
 import fs from 'fs';
 import csv from 'csv-parser';
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
-import 'dotenv/config';
 import { InferModel } from 'drizzle-orm';
 import { players } from './db/schema';
+import db from './db/db';
 
 type NewPlayer = InferModel<typeof players, 'insert'>;
 
@@ -13,10 +11,6 @@ type PlayerFromCSV = {
   lastName: string;
   yearOfBirth: string;
 };
-
-const connectionString = process.env.CONNECTION_STRING || '';
-const sql = postgres(connectionString, { max: 1 });
-const db = drizzle(sql);
 
 const readCSVFile = (filePath: string): Promise<PlayerFromCSV[]> => {
   const results: PlayerFromCSV[] = [];

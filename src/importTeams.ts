@@ -1,14 +1,8 @@
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
-import 'dotenv/config';
+import db from './db/db';
 import { InferModel } from 'drizzle-orm';
 import { teams } from './db/schema';
 
 type NewTeam = InferModel<typeof teams, 'insert'>;
-
-const connectionString = process.env.CONNECTION_STRING || '';
-const sql = postgres(connectionString, { max: 1 });
-const db = drizzle(sql);
 
 const mensTeams = [
   'Scrosoppi FC',
@@ -32,6 +26,28 @@ const mensTeams = [
   "Master's FA",
   'Unionville Milliken S.C.',
   'BVB IA Waterloo',
+];
+
+const womensTeams = [
+  'NDC-Ontario',
+  'Vaughan Azzurri',
+  'North Toronto Nitros',
+  'Alliance United FC',
+  'Woodbridge Strikers',
+  'FC London',
+  'Simcoe County Rovers FC',
+  'Electric City FC',
+  'North Mississauga SC',
+  'BVB IA Waterloo',
+  'Blue Devils FC',
+  'Guelph United',
+  'St. Catharines Roma Wolves',
+  'Unionville Milliken SC',
+  'Hamilton United',
+  'Darby FC',
+  'Tecumseh SC',
+  'Burlington SC',
+  'ProStars FC',
 ];
 
 const importTeams = async (newTeams: string[]) => {

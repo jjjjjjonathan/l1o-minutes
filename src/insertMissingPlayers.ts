@@ -1,8 +1,6 @@
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
-import 'dotenv/config';
 import { InferModel, eq } from 'drizzle-orm';
 import { playerMinutes, players } from './db/schema';
+import db from './db/db';
 
 type NewPlayerMinutes = InferModel<typeof playerMinutes, 'insert'>;
 
@@ -13,11 +11,14 @@ type MissingPlayer = {
   matchId: number;
 };
 
-const connectionString = process.env.CONNECTION_STRING || '';
-const sql = postgres(connectionString, { max: 1 });
-const db = drizzle(sql);
-
-const missingPlayers: MissingPlayer[] = [];
+const missingPlayers: MissingPlayer[] = [
+  {
+    name: 'JAKUB LASKOWSKI',
+    teamId: 15,
+    minutes: 1,
+    matchId: 366,
+  },
+];
 
 const insertMissingPlayerMinutes = async (missingPlayers: MissingPlayer[]) => {
   const playerMinutesToAdd: NewPlayerMinutes[] = [];
