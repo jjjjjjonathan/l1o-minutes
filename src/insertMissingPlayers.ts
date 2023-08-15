@@ -1,6 +1,7 @@
 import { InferModel, eq } from 'drizzle-orm';
 import { playerMinutes, players } from './db/schema';
 import db from './db/db';
+import { getPlayer } from './importMatch';
 
 type NewPlayerMinutes = InferModel<typeof playerMinutes, 'insert'>;
 
@@ -13,43 +14,62 @@ type MissingPlayer = {
 
 const missingPlayers: MissingPlayer[] = [
   {
-    name: 'JAKUB LASKOWSKI',
-    teamId: 15,
-    minutes: 1,
-    matchId: 366,
+    name: 'ADEL SERRAG ELDIN',
+    teamId: 21,
+    minutes: 25,
+    matchId: 369,
+  },
+  {
+    name: 'AUSTIN HUNT',
+    teamId: 21,
+    minutes: 45,
+    matchId: 369,
+  },
+  {
+    name: 'ISAAC GALAN QUINTEROS',
+    teamId: 19,
+    minutes: 4,
+    matchId: 369,
   },
 ];
 
 const insertMissingPlayerMinutes = async (missingPlayers: MissingPlayer[]) => {
-  const playerMinutesToAdd: NewPlayerMinutes[] = [];
-  const missingPlayerArray: string[] = [];
-  missingPlayers.forEach(async (player) => {
+  const mappedPlayers = missingPlayers.map(async (player) => {
     const result = await db
       .select()
       .from(players)
       .where(eq(players.name, player.name.toUpperCase()));
-    if (result.length > 0) {
-      console.log(result);
-      playerMinutesToAdd.push({
+    if (result.length <= 0) {
+      console.log(`Cannot find ${player.name} in the database still.`);
+      return player.name;
+    } else {
+      return {
         minutes: player.minutes,
         matchId: player.matchId,
         playerId: result[0].id,
         teamId: player.teamId,
-      });
-    } else {
-      console.log(
-        `Still cannot find ${player.name} playing in match ${player.matchId}`
-      );
-      missingPlayerArray.push(`${player.name} from match ${player.matchId}`);
+      };
     }
   });
-  setTimeout(async () => {
-    console.log(
-      'Adding everyone except these missing players:',
-      missingPlayerArray
-    );
-    await db.insert(playerMinutes).values(playerMinutesToAdd);
-  }, 10000);
+
+  return await Promise.all(mappedPlayers);
 };
 
-insertMissingPlayerMinutes(missingPlayers);
+insertMissingPlayerMinutes(missingPlayers)
+  .then(async (data) => {
+    const missingPlayers = data.filter((player) => typeof player === 'string');
+    const playerMinutesToAdd = data.filter(
+      (player) => typeof player !== 'string'
+    ) as NewPlayerMinutes[];
+    const result = await db
+      .insert(playerMinutes)
+      .values(playerMinutesToAdd)
+      .returning();
+    console.log('These players were not added: ', missingPlayers);
+    console.log('These players were added: ', result);
+    process.exit(0);
+  })
+  .catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });

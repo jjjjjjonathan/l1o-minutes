@@ -5,4 +5,12 @@ const runMigration = async () => {
   await migrate(db, { migrationsFolder: 'drizzle' });
 };
 
-runMigration();
+runMigration()
+  .then(() => {
+    console.log('migration ran');
+    process.exit(0);
+  })
+  .catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });

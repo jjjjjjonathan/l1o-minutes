@@ -61,4 +61,12 @@ const importTeams = async (newTeams: string[]) => {
   await db.insert(teams).values(mappedTeams);
 };
 
-importTeams(mensTeams);
+importTeams(mensTeams)
+  .then(() => {
+    console.log('Teams have been added');
+    process.exit(0);
+  })
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });

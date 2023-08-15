@@ -26,7 +26,7 @@ const loadHtml = async (url: string) => {
     $('ul.gameXtras').find('li').first().text().split(':')[1],
     10
   );
-  console.log(matchId, 'this is matchId');
+  console.log(matchId, 'is the matchId');
   const teams = $('div.game-header > a.team-name')
     .map(function (_id, element) {
       return $(element).text();
@@ -76,49 +76,74 @@ const getTeam = async (name: string) => {
 };
 
 export const getPlayer = async (name: string) => {
-  const playersResult: DbPlayer[] = await db
+  const playerResult: DbPlayer[] = await db
     .select()
     .from(players)
     .where(eq(players.name, name.toUpperCase()));
-  return playersResult;
+  return playerResult;
+};
+
+const findPlayers = async (
+  players: Player[],
+  matchId: number,
+  teamId: number
+) => {
+  const mappedPlayers = players.map(async (player) => {
+    const playerToReturn = {
+      minutes: player.minutes,
+      matchId,
+      playerId: 0,
+      teamId,
+    };
+    const playerResult = await getPlayer(player.name);
+    if (playerResult.length <= 0) {
+      return player.name;
+    } else {
+      playerToReturn.playerId = playerResult[0].id;
+      return playerToReturn;
+    }
+  });
+
+  return mappedPlayers;
 };
 
 const importMatch = async (url: string) => {
   const { homeTeam, awayTeam, matchId } = await loadHtml(url);
   const homeTeamResult = await getTeam(homeTeam.teamName);
   const awayTeamResult = await getTeam(awayTeam.teamName);
-  const missingPlayers: string[] = [];
-  const playerMinutesToAdd: NewPlayerMinutes[] = [];
-  homeTeam.players.forEach(async (player) => {
-    const result = await getPlayer(player.name);
-    if (result.length <= 0) {
-      missingPlayers.push(player.name);
-    } else {
-      playerMinutesToAdd.push({
-        minutes: player.minutes,
-        matchId,
-        playerId: result[0].id,
-        teamId: homeTeamResult[0].id,
-      });
-    }
-  });
-  awayTeam.players.forEach(async (player) => {
-    const result = await getPlayer(player.name);
-    if (result.length <= 0) {
-      missingPlayers.push(player.name);
-    } else {
-      playerMinutesToAdd.push({
-        minutes: player.minutes,
-        matchId,
-        playerId: result[0].id,
-        teamId: awayTeamResult[0].id,
-      });
-    }
-  });
-  setTimeout(async () => {
-    console.log(missingPlayers, playerMinutesToAdd);
-    await db.insert(playerMinutes).values(playerMinutesToAdd);
-  }, 6000);
+
+  const homePlayers = await findPlayers(
+    homeTeam.players,
+    matchId,
+    homeTeamResult[0].id
+  );
+  const awayPlayers = await findPlayers(
+    awayTeam.players,
+    matchId,
+    awayTeamResult[0].id
+  );
+
+  return await Promise.all(homePlayers.concat(awayPlayers));
 };
 
-importMatch(url);
+importMatch(url)
+  .then(async (data) => {
+    const confirmedPlayers = data.filter(
+      (player) => typeof player !== 'string'
+    ) as NewPlayerMinutes[];
+    const missingPlayers = data.filter((player) => typeof player === 'string');
+    const result = await db
+      .insert(playerMinutes)
+      .values(confirmedPlayers)
+      .returning();
+    console.log(
+      'These players will not be added, add them manually: ',
+      missingPlayers
+    );
+    console.log('These players were added: ', result);
+    process.exit(0);
+  })
+  .catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });

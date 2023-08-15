@@ -37,7 +37,9 @@ readCSVFile(filePath)
     );
 
     await db.insert(players).values(mappedPlayers);
+    process.exit(0);
   })
   .catch((error) => {
     console.error(error);
+    process.exit(1);
   });
