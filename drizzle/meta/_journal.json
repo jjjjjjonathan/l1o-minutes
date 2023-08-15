@@ -8,6 +8,13 @@
       "when": 1691629611938,
       "tag": "0000_absurd_kate_bishop",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1692074552853,
+      "tag": "0001_mighty_spot",
+      "breakpoints": true
     }
   ]
 }
