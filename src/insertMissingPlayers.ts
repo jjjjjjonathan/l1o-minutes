@@ -12,26 +12,7 @@ type MissingPlayer = {
   matchId: number;
 };
 
-const missingPlayers: MissingPlayer[] = [
-  {
-    name: 'ADEL SERRAG ELDIN',
-    teamId: 21,
-    minutes: 25,
-    matchId: 369,
-  },
-  {
-    name: 'AUSTIN HUNT',
-    teamId: 21,
-    minutes: 45,
-    matchId: 369,
-  },
-  {
-    name: 'ISAAC GALAN QUINTEROS',
-    teamId: 19,
-    minutes: 4,
-    matchId: 369,
-  },
-];
+const missingPlayers: MissingPlayer[] = [];
 
 const insertMissingPlayerMinutes = async (missingPlayers: MissingPlayer[]) => {
   const mappedPlayers = missingPlayers.map(async (player) => {
