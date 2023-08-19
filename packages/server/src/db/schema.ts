@@ -16,6 +16,8 @@ export const players = pgTable('players', {
 export const divisionEnum = pgEnum('division', [
   "Men's Premier",
   "Women's Premier",
+  "Men's Reserve League",
+  "Women's Reserve League",
 ]);
 
 export const teams = pgTable('teams', {

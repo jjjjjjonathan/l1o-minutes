@@ -15,6 +15,13 @@
       "when": 1692074552853,
       "tag": "0001_mighty_spot",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1692470073404,
+      "tag": "0002_special_vampiro",
+      "breakpoints": true
     }
   ]
 }
