@@ -1,14 +1,12 @@
-import { useState, useEffect } from "react";
-import { Workspace } from "types";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink } from "@trpc/client";
 import { trpc } from "./utils/trpc";
-import Workspaces from "@/components/workspace";
+import TeamList from "@/components/teamList";
 
 function App() {
   const [count, setCount] = useState(0);
-  const [data, setData] = useState<Workspace[]>([]);
 
   const [queryClient] = useState(() => new QueryClient());
   const [trpcClient] = useState(() =>
@@ -20,14 +18,6 @@ function App() {
       ],
     }),
   );
-
-  // useEffect(() => {
-  //   fetch("http://localhost:3001/workspaces")
-  //     .then((response) => response.json())
-  //     .then(({ data }) => {
-  //       setData(data);
-  //     });
-  // });
 
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
@@ -41,9 +31,7 @@ function App() {
             Edit <code>src/App.tsx</code> and save to test HMR
           </p>
         </div>
-        <Workspaces />
-        {/* <h2>Workspaces</h2>
-        <pre>{JSON.stringify(data, null, 2)}</pre> */}
+        <TeamList />
       </QueryClientProvider>
     </trpc.Provider>
   );

@@ -1,10 +1,11 @@
 import cors from 'cors';
-import { Workspace } from 'types';
 import express, { Application } from 'express';
 import 'dotenv/config';
 import { initTRPC, inferAsyncReturnType } from '@trpc/server';
 import * as trpcExpress from '@trpc/server/adapters/express';
 import { z } from 'zod';
+import db from './db/db';
+import { teams } from './db/schema';
 
 const createContext = ({
   req,
@@ -15,13 +16,9 @@ type Context = inferAsyncReturnType<typeof createContext>;
 export const t = initTRPC.context<Context>().create();
 
 export const appRouter = t.router({
-  getWorkspaces: t.procedure.query(() => {
-    const workspaces: Workspace[] = [
-      { name: 'server', version: '1.0.0' },
-      { name: 'types', version: '1.0.0' },
-      { name: 'client', version: '1.0.0' },
-    ];
-    return workspaces;
+  getTeams: t.procedure.query(async () => {
+    const result = await db.select().from(teams);
+    return result;
   }),
 });
 
@@ -41,12 +38,3 @@ app.use(
 );
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-app.get('/workspaces', (_, res) => {
-  const workspaces: Workspace[] = [
-    { name: 'server', version: '1.0.0' },
-    { name: 'types', version: '1.0.0' },
-    { name: 'client', version: '1.0.0' },
-  ];
-  res.json({ data: workspaces });
-});

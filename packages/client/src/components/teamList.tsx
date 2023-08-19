@@ -1,14 +1,14 @@
 import { trpc } from "@/utils/trpc";
 
-const Workspaces = () => {
-  const { data } = trpc.getWorkspaces.useQuery();
+const TeamList = () => {
+  const { data } = trpc.getTeams.useQuery();
 
   return (
     <>
-      <h2>Workspaces</h2>
+      <h2>Teams</h2>
       {data ? <pre>{JSON.stringify(data, null, 2)}</pre> : <p>no data</p>}
     </>
   );
 };
 
-export default Workspaces;
+export default TeamList;

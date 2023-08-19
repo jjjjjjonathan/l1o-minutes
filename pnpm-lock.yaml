@@ -86,9 +86,6 @@ importers:
       tailwindcss:
         specifier: ^3.3.3
         version: 3.3.3
-      types:
-        specifier: workspace:*
-        version: link:../types
       typescript:
         specifier: ^5.0.2
         version: 5.1.6
@@ -147,15 +144,6 @@ importers:
       ts-node:
         specifier: ^10.9.1
         version: 10.9.1(@types/node@20.5.1)(typescript@5.1.6)
-      types:
-        specifier: workspace:*
-        version: link:../types
-      typescript:
-        specifier: ^5.1.6
-        version: 5.1.6
-
-  packages/types:
-    devDependencies:
       typescript:
         specifier: ^5.1.6
         version: 5.1.6
