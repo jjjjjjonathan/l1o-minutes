@@ -43,9 +43,10 @@ function App() {
               </TabsList>
             </Tabs>
           </div>
-
-          {view === "viewer" ? <DivisionList /> : null}
-          {view === "scraper" ? <Scraper /> : null}
+          <main className="pt-8">
+            {view === "viewer" ? <DivisionList /> : null}
+            {view === "scraper" ? <Scraper /> : null}
+          </main>
         </div>
       </QueryClientProvider>
     </trpc.Provider>
