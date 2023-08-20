@@ -20,6 +20,13 @@ export const appRouter = t.router({
     const result = await db.select().from(teams);
     return result;
   }),
+  getDivisions: t.procedure.query(async () => {
+    const result = await db
+      .selectDistinct({ division: teams.division })
+      .from(teams)
+      .orderBy(teams.division);
+    return result;
+  }),
 });
 
 export type AppRouter = typeof appRouter;

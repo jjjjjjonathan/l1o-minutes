@@ -107,18 +107,59 @@ const mensReserveTeams = [
   'St. Catherines Roma Wolves U19',
 ];
 
+const womensReserveTeams = [
+  "Alliance United Women's Reserve",
+  "Simcoe County Rovers Women's Reserve NE",
+  "Electric City FC Women's Reserve",
+  'Pickering FC Women',
+  'Aurora FC Women',
+  "Unionville Milliken SC Women's Reserve",
+  "Master's FA Women",
+  "Darby FC Women's Reserve",
+  "BVB IA Waterloo Women's Reserve",
+  'Whitecaps London SC Women',
+  'Cambridge United Women',
+  "FC London Women's Reserve",
+  "Hamilton United Women's Reserve",
+  "Burlington SC Women's Reserve",
+  "St. Catherines Roma Wolves Women's Reserve",
+  'Scrosoppi FC Women',
+  "North Toronto Nitros Women's Reserve",
+  "Woodbridge Strikers Women's Reserve",
+  "Vaughan Azzurri Women's Reserve",
+  "North Mississauga SC Women's Reserve",
+  "Blue Devils FC Women's Reserve",
+  "Simcoe County Rovers Women's Reserve Central",
+  "ProStars FC Women's Reserve",
+  'Rush Canada Women',
+  "Pickering FC Women's U19",
+  "North Toronto Nitros Women's U19",
+  "Vaughan SC Women's U19",
+  "FC Durham Women's U19",
+  "Unionville Milliken SC Women's U19",
+  "Woodbridge Strikers Women's U19",
+  "Darby FC Women's U19",
+  "Tecumseh SC Women's U19",
+  "Rush Canada Women's U19",
+  "North Mississauga SC Women's U19",
+  "Oakville SC Women's U19",
+  "Hamilton United Women's U19",
+  "Windsor City Women's U19",
+  "St. Catharines Roma Wolves Women's U19",
+];
+
 const importTeams = async (newTeams: string[]) => {
   const mappedTeams = newTeams.map(
     (team): NewTeam => ({
       name: team,
-      division: "Men's Reserve League",
+      division: "Women's Reserve League",
     })
   );
 
   await db.insert(teams).values(mappedTeams);
 };
 
-importTeams(mensReserveTeams)
+importTeams(womensReserveTeams)
   .then(() => {
     console.log('Teams have been added');
     process.exit(0);

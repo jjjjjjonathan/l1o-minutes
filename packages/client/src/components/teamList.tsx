@@ -1,7 +1,7 @@
 import { trpc } from "@/utils/trpc";
 
 const TeamList = () => {
-  const { data } = trpc.getTeams.useQuery();
+  const { data } = trpc.getDivisions.useQuery();
 
   return (
     <>

@@ -1,13 +1,12 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink } from "@trpc/client";
 import { trpc } from "./utils/trpc";
-import TeamList from "@/components/teamList";
+import { DivisionList } from "./components/division";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Scraper } from "./components/scraper";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   const [queryClient] = useState(() => new QueryClient());
   const [trpcClient] = useState(() =>
     trpc.createClient({
@@ -18,20 +17,36 @@ function App() {
       ],
     }),
   );
+  const [view, setView] = useState<"viewer" | "scraper">("viewer");
 
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
-        <h1 className="text-6xl font-bold text-red-500">Vite + React</h1>
-        <div className="card">
-          <Button onClick={() => setCount((count) => count + 1)}>
-            count is {count}
-          </Button>
-          <p className="text-3xl">
-            Edit <code>src/App.tsx</code> and save to test HMR
-          </p>
+        <div className="container relative flex flex-col p-8">
+          <div className="flex flex-row items-center justify-between">
+            <header>
+              <h1 className="text-3xl font-bold leading-tight tracking-tighter md:text-5xl lg:leading-[1.1]">
+                Minutes Scraper
+              </h1>
+              <span className="max-w-[750px] text-lg text-muted-foreground sm:text-xl">
+                League1 Ontario minutes grouped by team and player birth year
+              </span>
+            </header>
+            <Tabs defaultValue="viewer">
+              <TabsList>
+                <TabsTrigger value="viewer" onClick={() => setView("viewer")}>
+                  View team
+                </TabsTrigger>
+                <TabsTrigger value="scraper" onClick={() => setView("scraper")}>
+                  Scrape match
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
+
+          {view === "viewer" ? <DivisionList /> : null}
+          {view === "scraper" ? <Scraper /> : null}
         </div>
-        <TeamList />
       </QueryClientProvider>
     </trpc.Provider>
   );

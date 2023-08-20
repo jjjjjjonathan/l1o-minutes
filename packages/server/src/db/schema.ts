@@ -23,7 +23,7 @@ export const divisionEnum = pgEnum('division', [
 export const teams = pgTable('teams', {
   id: serial('id').primaryKey(),
   name: text('name').notNull(),
-  division: divisionEnum('division'),
+  division: divisionEnum('division').notNull(),
 });
 
 export const playerMinutes = pgTable(
