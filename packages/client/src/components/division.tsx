@@ -20,7 +20,7 @@ export const DivisionList = () => {
     return (
       <div className="flex flex-row gap-x-4">
         {data.map((division) => (
-          <DivisionItem name={division.division} key={division.division} />
+          <DivisionItem name={division.name} key={division.name} />
         ))}
       </div>
     );

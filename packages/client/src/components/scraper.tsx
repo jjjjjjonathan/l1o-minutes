@@ -12,6 +12,15 @@ import {
 } from "@/components/ui/form";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import { trpc } from "@/utils/trpc";
+import { useState } from "react";
+
+type Player = {
+  minutes: number;
+  matchId: number;
+  playerId: number;
+  teamId: number;
+};
 
 const scraperFormSchema = z.object({
   match: z
@@ -23,6 +32,16 @@ const scraperFormSchema = z.object({
 });
 
 export const Scraper = () => {
+  const [insertedPlayers, setInsertedPlayers] = useState<Player[]>([]);
+  const [updatedPlayers, setUpdatedPlayers] = useState<Player[]>([]);
+  const [missingPlayers, setMissingPlayers] = useState<string[]>([]);
+  const { mutate } = trpc.scrapeMatch.useMutation({
+    onSuccess: (data) => {
+      setInsertedPlayers(data.insertedPlayers);
+      setUpdatedPlayers(data.updatedPlayers);
+      setMissingPlayers(data.missingPlayers);
+    },
+  });
   const form = useForm<z.infer<typeof scraperFormSchema>>({
     resolver: zodResolver(scraperFormSchema),
     defaultValues: {
@@ -31,32 +50,37 @@ export const Scraper = () => {
   });
 
   function onSubmit(values: z.infer<typeof scraperFormSchema>) {
-    console.log(values);
+    mutate(values);
   }
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="match"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Match URL</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="https://www.league1ontario.com/game/show/..."
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>
-                Write the match URL page from the League1 Ontario website
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Submit</Button>
-      </form>
-    </Form>
+    <>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <FormField
+            control={form.control}
+            name="match"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Match URL</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="https://www.league1ontario.com/game/show/..."
+                    {...field}
+                  />
+                </FormControl>
+                <FormDescription>
+                  Write the match URL page from the League1 Ontario website
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button type="submit">Submit</Button>
+        </form>
+      </Form>
+      {JSON.stringify(insertedPlayers, null, 2)}
+      {JSON.stringify(updatedPlayers, null, 2)}
+      {JSON.stringify(missingPlayers, null, 2)}
+    </>
   );
 };

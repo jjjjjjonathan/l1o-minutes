@@ -3,7 +3,6 @@ import {
   serial,
   text,
   integer,
-  pgEnum,
   primaryKey,
 } from 'drizzle-orm/pg-core';
 
@@ -13,17 +12,19 @@ export const players = pgTable('players', {
   yearOfBirth: integer('year_of_birth').notNull(),
 });
 
-export const divisionEnum = pgEnum('division', [
-  "Men's Premier",
-  "Women's Premier",
-  "Men's Reserve League",
-  "Women's Reserve League",
-]);
+export const divisions = pgTable('divisions', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+});
 
 export const teams = pgTable('teams', {
   id: serial('id').primaryKey(),
   name: text('name').notNull(),
-  division: divisionEnum('division').notNull(),
+  divisionId: integer('division_id')
+    .references(() => divisions.id, {
+      onDelete: 'cascade',
+    })
+    .notNull(),
 });
 
 export const playerMinutes = pgTable(
