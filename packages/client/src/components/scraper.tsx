@@ -78,8 +78,11 @@ export const Scraper = () => {
           <Button type="submit">Submit</Button>
         </form>
       </Form>
+      <p>These players were inserted</p>
       {JSON.stringify(insertedPlayers, null, 2)}
+      <p>These players were updated</p>
       {JSON.stringify(updatedPlayers, null, 2)}
+      <p>These players were missing</p>
       {JSON.stringify(missingPlayers, null, 2)}
     </>
   );
