@@ -28,5 +28,5 @@ export const DivisionList = () => {
 };
 
 export const DivisionItem = ({ name }: DivisionItemProps) => {
-  return <Button>{name}</Button>;
+  return <Button variant={"default"}>{name}</Button>;
 };

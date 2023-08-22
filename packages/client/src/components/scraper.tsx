@@ -14,6 +14,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { trpc } from "@/utils/trpc";
 import { useState } from "react";
+import { useToast } from "./ui/use-toast";
 
 type Player = {
   minutes: number;
@@ -50,12 +51,21 @@ export const Scraper = () => {
   });
 
   function onSubmit(values: z.infer<typeof scraperFormSchema>) {
+    toast({
+      title: "Match submitted. Hang tight!",
+      description: "Details should pop up soon.",
+    });
     mutate(values);
   }
+
+  const { toast } = useToast();
   return (
     <>
+      <h2 className="text-3xl font-bold tracking-tight">
+        Scrape a League1 Ontario match
+      </h2>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 pt-8">
           <FormField
             control={form.control}
             name="match"

@@ -5,6 +5,7 @@ import { trpc } from "./utils/trpc";
 import { DivisionList } from "./components/division";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Scraper } from "./components/scraper";
+import { Toaster } from "./components/ui/toaster";
 
 function App() {
   const [queryClient] = useState(() => new QueryClient());
@@ -35,7 +36,7 @@ function App() {
             <Tabs defaultValue="viewer">
               <TabsList>
                 <TabsTrigger value="viewer" onClick={() => setView("viewer")}>
-                  View team
+                  View stats
                 </TabsTrigger>
                 <TabsTrigger value="scraper" onClick={() => setView("scraper")}>
                   Scrape match
@@ -48,6 +49,7 @@ function App() {
             {view === "scraper" ? <Scraper /> : null}
           </main>
         </div>
+        <Toaster />
       </QueryClientProvider>
     </trpc.Provider>
   );
