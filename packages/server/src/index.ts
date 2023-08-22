@@ -43,14 +43,13 @@ const findPlayers = async (
       matchId,
       playerId: 0,
       teamId,
+      name: player.name,
     };
     const playerResult = await getPlayer(player.name);
-    if (playerResult.length <= 0) {
-      return player.name;
-    } else {
+    if (playerResult.length > 0) {
       playerToReturn.playerId = playerResult[0].id;
-      return playerToReturn;
     }
+    return playerToReturn;
   });
 
   return mappedPlayers;
@@ -86,7 +85,10 @@ export const appRouter = t.router({
       const divisionId = divisionResult[0].id;
 
       const homeTeamResult = await db
-        .select({ id: teams.id })
+        .select({
+          id: teams.id,
+          name: teams.name,
+        })
         .from(teams)
         .where(
           and(
@@ -96,7 +98,10 @@ export const appRouter = t.router({
         );
 
       const awayTeamResult = await db
-        .select({ id: teams.id })
+        .select({
+          id: teams.id,
+          name: teams.name,
+        })
         .from(teams)
         .where(
           and(
@@ -120,11 +125,11 @@ export const appRouter = t.router({
       const playerList = await Promise.all(homePlayers.concat(awayPlayers));
 
       const confirmedPlayers = playerList.filter(
-        (player) => typeof player !== 'string'
-      ) as NewPlayerMinutes[];
+        (player) => player.playerId > 0
+      );
       const missingPlayers = playerList.filter(
-        (player) => typeof player === 'string'
-      ) as string[];
+        (player) => player.playerId <= 0
+      );
       const insertResult = await db
         .insert(playerMinutes)
         .values(confirmedPlayers)
@@ -161,9 +166,12 @@ export const appRouter = t.router({
       const updateResult = await Promise.all(mappedPlayerMinutesToUpdate);
 
       return {
-        insertedPlayers: insertResult,
-        updatedPlayers: updateResult,
+        insertedPlayers: confirmedPlayers,
+        updatedPlayers: playerMinutesToUpdate,
         missingPlayers,
+        homeTeam: homeTeamResult[0],
+        awayTeam: awayTeamResult[0],
+        matchId,
       };
     }),
 });

@@ -21,6 +21,7 @@ type Player = {
   matchId: number;
   playerId: number;
   teamId: number;
+  name?: string;
 };
 
 const scraperFormSchema = z.object({
@@ -32,12 +33,31 @@ const scraperFormSchema = z.object({
     }),
 });
 
+const MissingPlayerList = ({ players }: { players: Player[] }) => {
+  return (
+    <>
+      <p>I can't find information on these players:</p>
+      <ul>
+        {players.map((player) => (
+          <li>
+            {player.name} who played {player.minutes} minutes.
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+};
+
 export const Scraper = () => {
   const [insertedPlayers, setInsertedPlayers] = useState<Player[]>([]);
   const [updatedPlayers, setUpdatedPlayers] = useState<Player[]>([]);
-  const [missingPlayers, setMissingPlayers] = useState<string[]>([]);
+  const [missingPlayers, setMissingPlayers] = useState<Player[]>([]);
   const { mutate } = trpc.scrapeMatch.useMutation({
     onSuccess: (data) => {
+      toast({
+        title: "Match has been scraped!",
+        description: `Match #${data.matchId} between ${data.homeTeam.name} and ${data.awayTeam.name} is now in the system.`,
+      });
       setInsertedPlayers(data.insertedPlayers);
       setUpdatedPlayers(data.updatedPlayers);
       setMissingPlayers(data.missingPlayers);
@@ -88,12 +108,9 @@ export const Scraper = () => {
           <Button type="submit">Submit</Button>
         </form>
       </Form>
-      <p>These players were inserted</p>
-      {JSON.stringify(insertedPlayers, null, 2)}
-      <p>These players were updated</p>
-      {JSON.stringify(updatedPlayers, null, 2)}
-      <p>These players were missing</p>
-      {JSON.stringify(missingPlayers, null, 2)}
+      {missingPlayers.length > 0 ? (
+        <MissingPlayerList players={missingPlayers} />
+      ) : null}
     </>
   );
 };
