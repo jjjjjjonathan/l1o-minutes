@@ -10,20 +10,18 @@ type Player = {
 };
 
 const PlayerSearch = () => {
-  const { data } = trpc.searchForPlayer.useQuery();
+  const utils = trpc.useContext()
   const [searchTerm, setSearchTerm] = useState("");
-  const [results, setResults] = useState<Player[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const debouncedSearchTerm = useDebounce(searchTerm, 1000);
+  const { data } = trpc.searchForPlayer.useQuery({ name: debouncedSearchTerm });
 
   useEffect(() => {
     const searchForPlayer = async () => {
       setIsSearching(true);
       if (debouncedSearchTerm) {
         console.log(debouncedSearchTerm);
-        if (data) {
-          setResults(data);
-        }
+        utils.searchForPlayer.invalidate()
       }
       setIsSearching(false);
     };
@@ -32,10 +30,18 @@ const PlayerSearch = () => {
   }, [debouncedSearchTerm]);
 
   return (
-    <Input
-      placeholder="Search for a player's name"
-      onChange={(event) => setSearchTerm(event.target.value)}
-    />
+    <>
+      <Input
+        placeholder="Search for a player's name"
+        onChange={(event) => setSearchTerm(event.target.value)}
+      />
+      <ul>
+        {data ? data.map((player) => {
+          return <li key={player.id}>{player.name}</li>
+        }) : null}
+      </ul>
+    </>
+
   );
 };
 

@@ -7,11 +7,11 @@ import { z } from 'zod';
 import db from './db/db';
 import { teams, divisions, players, playerMinutes } from './db/schema';
 import { loadMatchHtml } from './helpers/helpers';
-import { and, eq, InferModel } from 'drizzle-orm';
+import { and, eq, ilike, inArray, InferModel } from 'drizzle-orm';
 
 const createContext = ({
   req,
-  res,
+  res
 }: trpcExpress.CreateExpressContextOptions) => ({});
 type Context = inferAsyncReturnType<typeof createContext>;
 
@@ -43,7 +43,7 @@ const findPlayers = async (
       matchId,
       playerId: 0,
       teamId,
-      name: player.name,
+      name: player.name
     };
     const playerResult = await getPlayer(player.name);
     if (playerResult.length > 0) {
@@ -56,10 +56,20 @@ const findPlayers = async (
 };
 
 export const appRouter = t.router({
-  searchForPlayer: t.procedure.query(async () => {
-    const result = await db.select().from(players).limit(5);
-    return result;
-  }),
+  searchForPlayer: t.procedure
+    .input(z.object({ name: z.string() }))
+    .query(async ({ input }) => {
+      if (input.name.length < 1) {
+        return [];
+      } else {
+        const result = await db
+          .select()
+          .from(players)
+          .where(ilike(players.name, `%${input.name}%`))
+          .limit(5);
+        return result;
+      }
+    }),
   getTeams: t.procedure.query(async () => {
     const result = await db.select().from(teams);
     return result;
@@ -74,7 +84,7 @@ export const appRouter = t.router({
         match: z
           .string()
           .url()
-          .startsWith('https://www.league1ontario.com/game/show/'),
+          .startsWith('https://www.league1ontario.com/game/show/')
       })
     )
     .mutation(async ({ input }) => {
@@ -91,7 +101,7 @@ export const appRouter = t.router({
       const homeTeamResult = await db
         .select({
           id: teams.id,
-          name: teams.name,
+          name: teams.name
         })
         .from(teams)
         .where(
@@ -104,7 +114,7 @@ export const appRouter = t.router({
       const awayTeamResult = await db
         .select({
           id: teams.id,
-          name: teams.name,
+          name: teams.name
         })
         .from(teams)
         .where(
@@ -138,7 +148,7 @@ export const appRouter = t.router({
         .insert(playerMinutes)
         .values(confirmedPlayers)
         .onConflictDoNothing({
-          target: [playerMinutes.playerId, playerMinutes.matchId],
+          target: [playerMinutes.playerId, playerMinutes.matchId]
         })
         .returning();
 
@@ -183,9 +193,9 @@ export const appRouter = t.router({
         missingPlayers,
         homeTeam: homeTeamResult[0],
         awayTeam: awayTeamResult[0],
-        matchId,
+        matchId
       };
-    }),
+    })
 });
 
 export type AppRouter = typeof appRouter;
@@ -199,7 +209,7 @@ app.use(
   '/trpc',
   trpcExpress.createExpressMiddleware({
     router: appRouter,
-    createContext,
+    createContext
   })
 );
 
