@@ -56,6 +56,10 @@ const findPlayers = async (
 };
 
 export const appRouter = t.router({
+  searchForPlayer: t.procedure.query(async () => {
+    const result = await db.select().from(players).limit(5);
+    return result;
+  }),
   getTeams: t.procedure.query(async () => {
     const result = await db.select().from(teams);
     return result;
@@ -138,6 +142,14 @@ export const appRouter = t.router({
         })
         .returning();
 
+      const insertedPlayers = confirmedPlayers.filter((player) =>
+        insertResult
+          .map((insertValue) =>
+            [insertValue.playerId, insertValue.matchId].join(',')
+          )
+          .includes([player.playerId, player.matchId].join(','))
+      );
+
       const playerMinutesToUpdate = confirmedPlayers.filter(
         (player) =>
           !insertResult
@@ -166,7 +178,7 @@ export const appRouter = t.router({
       const updateResult = await Promise.all(mappedPlayerMinutesToUpdate);
 
       return {
-        insertedPlayers: confirmedPlayers,
+        insertedPlayers,
         updatedPlayers: playerMinutesToUpdate,
         missingPlayers,
         homeTeam: homeTeamResult[0],

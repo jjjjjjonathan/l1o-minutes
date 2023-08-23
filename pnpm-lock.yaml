@@ -34,6 +34,9 @@ importers:
       '@trpc/react-query':
         specifier: ^10.37.1
         version: 10.37.1(@tanstack/react-query@4.33.0)(@trpc/client@10.37.1)(@trpc/server@10.37.1)(react-dom@18.2.0)(react@18.2.0)
+      '@uidotdev/usehooks':
+        specifier: ^2.1.1
+        version: 2.1.1(react-dom@18.2.0)(react@18.2.0)
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.0
@@ -1645,6 +1648,17 @@ packages:
       '@typescript-eslint/types': 6.0.0
       eslint-visitor-keys: 3.4.3
     dev: true
+
+  /@uidotdev/usehooks@2.1.1(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-sVJ1jXU62Edh22dREEa3mHcHnH2MUgokuzLw9guNS30ADCkdhYASNZxg2V8iB83iwY5H+jSeSxjqGaFvsRrNBQ==}
+    engines: {node: '>=16'}
+    peerDependencies:
+      react: '>=18.0.0'
+      react-dom: '>=18.0.0'
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
 
   /@vitejs/plugin-react@4.0.4(vite@4.4.9):
     resolution: {integrity: sha512-7wU921ABnNYkETiMaZy7XqpueMnpu5VxvVps13MjmCo+utBdD79sZzrApHawHtVX66cCJQQTXFcjH0y9dSUK8g==}

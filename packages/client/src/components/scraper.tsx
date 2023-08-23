@@ -15,6 +15,7 @@ import { Input } from "./ui/input";
 import { trpc } from "@/utils/trpc";
 import { useState } from "react";
 import { useToast } from "./ui/use-toast";
+import PlayerSearch from "./playerSearch";
 
 type Player = {
   minutes: number;
@@ -22,6 +23,11 @@ type Player = {
   playerId: number;
   teamId: number;
   name?: string;
+};
+
+type PlayerListProps = {
+  players: Player[];
+  message: string;
 };
 
 const scraperFormSchema = z.object({
@@ -33,13 +39,13 @@ const scraperFormSchema = z.object({
     }),
 });
 
-const MissingPlayerList = ({ players }: { players: Player[] }) => {
+const PlayerList = ({ players, message }: PlayerListProps) => {
   return (
     <>
-      <p>I can't find information on these players:</p>
+      <p>{message}</p>
       <ul>
         {players.map((player) => (
-          <li>
+          <li key={player.name}>
             {player.name} who played {player.minutes} minutes.
           </li>
         ))}
@@ -49,8 +55,6 @@ const MissingPlayerList = ({ players }: { players: Player[] }) => {
 };
 
 export const Scraper = () => {
-  const [insertedPlayers, setInsertedPlayers] = useState<Player[]>([]);
-  const [updatedPlayers, setUpdatedPlayers] = useState<Player[]>([]);
   const [missingPlayers, setMissingPlayers] = useState<Player[]>([]);
   const { mutate } = trpc.scrapeMatch.useMutation({
     onSuccess: (data) => {
@@ -58,8 +62,13 @@ export const Scraper = () => {
         title: "Match has been scraped!",
         description: `Match #${data.matchId} between ${data.homeTeam.name} and ${data.awayTeam.name} is now in the system.`,
       });
-      setInsertedPlayers(data.insertedPlayers);
-      setUpdatedPlayers(data.updatedPlayers);
+      if (data.missingPlayers.length > 0) {
+        toast({
+          title: "Some players couldn't be added.",
+          description:
+            "Check the list and see if you can find the players in the database.",
+        });
+      }
       setMissingPlayers(data.missingPlayers);
     },
   });
@@ -109,7 +118,13 @@ export const Scraper = () => {
         </form>
       </Form>
       {missingPlayers.length > 0 ? (
-        <MissingPlayerList players={missingPlayers} />
+        <>
+          <PlayerList
+            players={missingPlayers}
+            message="I can't find info on these players:"
+          />
+          <PlayerSearch />
+        </>
       ) : null}
     </>
   );
