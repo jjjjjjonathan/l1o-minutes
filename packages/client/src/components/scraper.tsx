@@ -25,9 +25,16 @@ type Player = {
   name?: string;
 };
 
+type Team = {
+  id: number;
+  name: string;
+};
+
 type PlayerListProps = {
   players: Player[];
   message: string;
+  homeTeam: Team;
+  awayTeam: Team;
 };
 
 const scraperFormSchema = z.object({
@@ -39,22 +46,37 @@ const scraperFormSchema = z.object({
     }),
 });
 
-const PlayerList = ({ players, message }: PlayerListProps) => {
+const PlayerList = ({
+  players,
+  message,
+  homeTeam,
+  awayTeam,
+}: PlayerListProps) => {
   return (
-    <>
-      <p>{message}</p>
-      <ul>
+    <div className="pt-8">
+      <p className="text-xl font-semibold">{message}</p>
+      <ul className="list-disc pt-4">
         {players.map((player) => (
           <li key={player.name}>
-            {player.name} who played {player.minutes} minutes.
+            {player.name} who played {player.minutes} minutes for{" "}
+            {player.teamId === homeTeam.id ? homeTeam.name : awayTeam.name}.
           </li>
         ))}
       </ul>
-    </>
+    </div>
   );
 };
 
 export const Scraper = () => {
+  const [homeTeam, setHomeTeam] = useState<Team>({
+    id: NaN,
+    name: "",
+  });
+  const [awayTeam, setAwayTeam] = useState<Team>({
+    id: NaN,
+    name: "",
+  });
+  const [matchId, setMatchId] = useState(NaN);
   const [missingPlayers, setMissingPlayers] = useState<Player[]>([]);
   const { mutate } = trpc.scrapeMatch.useMutation({
     onSuccess: (data) => {
@@ -70,6 +92,9 @@ export const Scraper = () => {
         });
       }
       setMissingPlayers(data.missingPlayers);
+      setHomeTeam(data.homeTeam);
+      setAwayTeam(data.awayTeam);
+      setMatchId(data.matchId);
     },
   });
   const form = useForm<z.infer<typeof scraperFormSchema>>({
@@ -122,8 +147,14 @@ export const Scraper = () => {
           <PlayerList
             players={missingPlayers}
             message="I can't find info on these players:"
+            homeTeam={homeTeam}
+            awayTeam={awayTeam}
           />
-          <PlayerSearch />
+          <PlayerSearch
+            matchId={matchId}
+            homeTeam={homeTeam}
+            awayTeam={awayTeam}
+          />
         </>
       ) : null}
     </>
