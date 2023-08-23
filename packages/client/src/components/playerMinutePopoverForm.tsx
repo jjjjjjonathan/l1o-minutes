@@ -40,7 +40,7 @@ const formSchema = z.object({
   minutes: z.coerce.number().min(1).max(90),
 });
 
-const PlayerPopoverForm = ({
+const PlayerMinutePopoverForm = ({
   player,
   matchId,
   homeTeam,
@@ -64,8 +64,7 @@ const PlayerPopoverForm = ({
     defaultValues: {
       playerId: player.id,
       matchId,
-      teamName: homeTeam.name,
-      minutes: 0,
+      // teamName: homeTeam.name,
     },
   });
 
@@ -122,7 +121,7 @@ const PlayerPopoverForm = ({
                   defaultValue={field.value}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a team." />
+                    <SelectValue placeholder="Select a team" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value={homeTeam.name}>
@@ -156,4 +155,4 @@ const PlayerPopoverForm = ({
   );
 };
 
-export default PlayerPopoverForm;
+export default PlayerMinutePopoverForm;

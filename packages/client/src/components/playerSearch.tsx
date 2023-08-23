@@ -17,7 +17,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "./ui/button";
-import PlayerPopoverForm from "./playerPopoverForm";
+import PlayerPopoverForm from "./playerMinutePopoverForm";
+import NewPlayerPopoverForm from "./newPlayerPopoverForm";
 
 type Team = {
   id: number;
@@ -55,6 +56,7 @@ const PlayerSearch = ({ matchId, homeTeam, awayTeam }: PlayerSearchProps) => {
         placeholder="Search for a player's name"
         onChange={(event) => setSearchTerm(event.target.value)}
       />
+
       <Table className="mt-4">
         <TableCaption>
           {debouncedSearchTerm.length >= 3 && isLoading
@@ -98,6 +100,18 @@ const PlayerSearch = ({ matchId, homeTeam, awayTeam }: PlayerSearchProps) => {
             : null}
         </TableBody>
       </Table>
+      <p className="pb-8 pt-16">
+        If you can't find a player but you know their birth year, add them into
+        the database below.
+      </p>
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button>Add new player</Button>
+        </PopoverTrigger>
+        <PopoverContent>
+          <NewPlayerPopoverForm />
+        </PopoverContent>
+      </Popover>
     </>
   );
 };

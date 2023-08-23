@@ -96,6 +96,24 @@ export const appRouter = t.router({
         .returning();
       return result;
     }),
+
+  addNewPlayer: t.procedure
+    .input(
+      z.object({
+        name: z.string().min(2),
+        yearOfBirth: z.number(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const result = await db
+        .insert(players)
+        .values({
+          name: input.name.toUpperCase(),
+          yearOfBirth: input.yearOfBirth,
+        })
+        .returning();
+      return result;
+    }),
   getTeams: t.procedure.query(async () => {
     const result = await db.select().from(teams);
     return result;
