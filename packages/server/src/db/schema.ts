@@ -25,6 +25,7 @@ export const teams = pgTable('teams', {
       onDelete: 'cascade',
     })
     .notNull(),
+  leagueRank: integer('league_rank'),
 });
 
 export const playerMinutes = pgTable(

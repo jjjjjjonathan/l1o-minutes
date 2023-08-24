@@ -7,7 +7,7 @@ import { z } from 'zod';
 import db from './db/db';
 import { teams, divisions, players, playerMinutes } from './db/schema';
 import { loadMatchHtml } from './helpers/helpers';
-import { and, eq, ilike, inArray, InferModel } from 'drizzle-orm';
+import { and, desc, eq, ilike, inArray, InferModel, sql } from 'drizzle-orm';
 
 const createContext = ({
   req,
@@ -71,6 +71,33 @@ export const appRouter = t.router({
       }
     }),
 
+  getDivisionSummary: t.procedure
+    .input(z.object({ divisionId: z.number().min(1) }))
+    .query(async ({ input }) => {
+      const result = await db
+        .select({
+          id: teams.id,
+          name: teams.name,
+          leagueRank: teams.leagueRank,
+          totalU23Minutes: sql<string>`sum(case when ${
+            players.yearOfBirth
+          } >= ${2000} then ${playerMinutes.minutes} else ${0} end)`.mapWith(
+            playerMinutes.minutes
+          ),
+          totalU20Minutes: sql<string>`sum(case when ${
+            players.yearOfBirth
+          } >= ${2003} then ${playerMinutes.minutes} else ${0} end)`.mapWith(
+            playerMinutes.minutes
+          ),
+        })
+        .from(playerMinutes)
+        .innerJoin(players, eq(players.id, playerMinutes.playerId))
+        .innerJoin(teams, eq(teams.id, playerMinutes.teamId))
+        .where(eq(teams.divisionId, input.divisionId))
+        .groupBy((teams) => teams.id)
+        .orderBy((teams) => teams.leagueRank);
+      return result;
+    }),
   insertOrUpdatePlayerMinute: t.procedure
     .input(
       z.object({

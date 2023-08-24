@@ -1,5 +1,6 @@
 import { trpc } from "@/utils/trpc";
 import { Button } from "@/components/ui/button";
+import DivisionSummary from "./division/summary";
 
 type DivisionItemProps = {
   name: string;
@@ -22,6 +23,7 @@ export const DivisionList = () => {
         {data.map((division) => (
           <DivisionItem name={division.name} key={division.name} />
         ))}
+        <DivisionSummary />
       </div>
     );
   }

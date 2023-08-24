@@ -43,6 +43,13 @@
       "when": 1692568980940,
       "tag": "0005_wealthy_lady_ursula",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1692904547716,
+      "tag": "0006_worthless_karnak",
+      "breakpoints": true
     }
   ]
 }
