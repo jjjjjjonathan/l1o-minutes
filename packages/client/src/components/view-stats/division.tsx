@@ -19,12 +19,14 @@ export const DivisionList = () => {
 
   if (isSuccess) {
     return (
-      <div className="flex flex-row gap-x-4">
-        {data.map((division) => (
-          <DivisionItem name={division.name} key={division.name} />
-        ))}
+      <>
+        <div className="flex flex-row gap-x-4">
+          {data.map((division) => (
+            <DivisionItem name={division.name} key={division.name} />
+          ))}
+        </div>
         <DivisionSummary />
-      </div>
+      </>
     );
   }
 };
