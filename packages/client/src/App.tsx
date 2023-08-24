@@ -2,9 +2,9 @@ import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink } from "@trpc/client";
 import { trpc } from "./utils/trpc";
-import { DivisionList } from "./components/division";
+import { DivisionList } from "./components/view-stats/division";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Scraper } from "./components/scraper";
+import { Scraper } from "@/components/view-scraper/";
 import { Toaster } from "./components/ui/toaster";
 
 function App() {

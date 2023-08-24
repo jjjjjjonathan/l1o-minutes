@@ -1,5 +1,5 @@
 import { trpc } from "@/utils/trpc";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 
 type DivisionItemProps = {
   name: string;

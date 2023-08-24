@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDebounce } from "@uidotdev/usehooks";
-import { Input } from "./ui/input";
+import { Input } from "@/components/ui/input";
 import { trpc } from "@/utils/trpc";
 import {
   Table,
@@ -16,7 +16,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import PlayerPopoverForm from "./playerMinutePopoverForm";
 import NewPlayerPopoverForm from "./newPlayerPopoverForm";
 
