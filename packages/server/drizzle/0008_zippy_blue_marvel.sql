@@ -1,0 +1,1 @@
+ALTER TABLE "player_minutes" ALTER COLUMN "division_id" SET NOT NULL;

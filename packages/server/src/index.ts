@@ -35,7 +35,8 @@ const getPlayer = async (name: string) => {
 const findPlayers = async (
   players: Player[],
   matchId: number,
-  teamId: number
+  teamId: number,
+  divisionId: number
 ) => {
   const mappedPlayers = players.map(async (player) => {
     const playerToReturn = {
@@ -44,6 +45,7 @@ const findPlayers = async (
       playerId: 0,
       teamId,
       name: player.name,
+      divisionId,
     };
     const playerResult = await getPlayer(player.name);
     if (playerResult.length > 0) {
@@ -105,6 +107,7 @@ export const appRouter = t.router({
         minutes: z.number(),
         teamId: z.number(),
         matchId: z.number(),
+        divisionId: z.number(),
       })
     )
     .mutation(async ({ input }) => {
@@ -115,6 +118,7 @@ export const appRouter = t.router({
           minutes: input.minutes,
           teamId: input.teamId,
           matchId: input.matchId,
+          divisionId: input.divisionId,
         })
         .onConflictDoUpdate({
           target: [playerMinutes.playerId, playerMinutes.matchId],
@@ -146,7 +150,15 @@ export const appRouter = t.router({
     return result;
   }),
   getDivisions: t.procedure.query(async () => {
-    const result = await db.select().from(divisions);
+    const result = await db
+      .select({
+        id: divisions.id,
+        name: divisions.name,
+        matchesCount: sql<number>`count(distinct ${playerMinutes.matchId})`,
+      })
+      .from(divisions)
+      .innerJoin(playerMinutes, eq(divisions.id, playerMinutes.divisionId))
+      .groupBy(divisions.id);
     return result;
   }),
   scrapeMatch: t.procedure
@@ -198,13 +210,15 @@ export const appRouter = t.router({
       const homePlayers = await findPlayers(
         homeTeam.players,
         matchId,
-        homeTeamResult[0].id
+        homeTeamResult[0].id,
+        divisionId
       );
 
       const awayPlayers = await findPlayers(
         awayTeam.players,
         matchId,
-        awayTeamResult[0].id
+        awayTeamResult[0].id,
+        divisionId
       );
 
       const playerList = await Promise.all(homePlayers.concat(awayPlayers));

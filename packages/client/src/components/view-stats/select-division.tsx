@@ -5,6 +5,7 @@ type DivisionItemProps = {
   name: string;
   handleClick: (view: number, title: string) => void;
   id: number;
+  matchesCount: number;
 };
 
 type DivisionListProps = {
@@ -31,6 +32,7 @@ export const DivisionList = ({ handleClick }: DivisionListProps) => {
               name={division.name}
               key={division.id}
               id={division.id}
+              matchesCount={division.matchesCount}
               handleClick={handleClick}
             />
           ))}
@@ -40,10 +42,15 @@ export const DivisionList = ({ handleClick }: DivisionListProps) => {
   }
 };
 
-export const DivisionItem = ({ name, handleClick, id }: DivisionItemProps) => {
+export const DivisionItem = ({
+  name,
+  handleClick,
+  id,
+  matchesCount,
+}: DivisionItemProps) => {
   return (
     <Button variant={"default"} onClick={() => handleClick(id, name)}>
-      {name}
+      {name}: {matchesCount}
     </Button>
   );
 };

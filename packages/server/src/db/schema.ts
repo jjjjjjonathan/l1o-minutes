@@ -39,6 +39,11 @@ export const playerMinutes = pgTable(
     teamId: integer('team_id')
       .references(() => teams.id, { onDelete: 'cascade' })
       .notNull(),
+    divisionId: integer('division_id')
+      .references(() => divisions.id, {
+        onDelete: 'cascade',
+      })
+      .notNull(),
   },
   ({ matchId, playerId }) => {
     return {

@@ -20,7 +20,7 @@ export const columns: ColumnDef<TeamRanking>[] = [
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            League Table Rank
+            Position
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         </div>
@@ -47,7 +47,7 @@ export const columns: ColumnDef<TeamRanking>[] = [
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Total U-23 Minutes
+            U-23 Minutes
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         </div>
@@ -70,7 +70,7 @@ export const columns: ColumnDef<TeamRanking>[] = [
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Total U-20 Minutes
+            U-20 Minutes
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         </div>
