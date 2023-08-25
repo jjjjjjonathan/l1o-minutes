@@ -2,10 +2,11 @@ import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink } from "@trpc/client";
 import { trpc } from "./utils/trpc";
-import { DivisionList } from "./components/view-stats/division";
+import { DivisionList } from "./components/view-stats/select-division";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Scraper } from "@/components/view-scraper/";
 import { Toaster } from "./components/ui/toaster";
+import ViewStats from "./components/view-stats";
 
 function App() {
   const [queryClient] = useState(() => new QueryClient());
@@ -45,7 +46,7 @@ function App() {
             </Tabs>
           </div>
           <main className="pt-8">
-            {view === "viewer" ? <DivisionList /> : null}
+            {view === "viewer" ? <ViewStats /> : null}
             {view === "scraper" ? <Scraper /> : null}
           </main>
         </div>

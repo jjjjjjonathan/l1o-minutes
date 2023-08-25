@@ -1,16 +1,20 @@
 import { trpc } from "@/utils/trpc";
-import { TeamRanking, columns } from "./rankings/columns";
+import { columns } from "./rankings/columns";
 import { DataTable } from "./rankings/data-table";
 
-const DivisionSummary = () => {
+type DivisionSummaryProps = {
+  divisionId: number;
+};
+
+const DivisionSummary = ({ divisionId }: DivisionSummaryProps) => {
   const { data } = trpc.getDivisionSummary.useQuery({
-    divisionId: 1,
+    divisionId,
   });
 
   if (data) {
     return <DataTable columns={columns} data={data} />;
   } else {
-    return <p>no data</p>;
+    return null;
   }
 };
 
