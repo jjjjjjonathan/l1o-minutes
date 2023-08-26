@@ -28,6 +28,7 @@ type Player = {
 type Team = {
   id: number;
   name: string;
+  divisionId: number;
 };
 
 type PlayerListProps = {
@@ -71,10 +72,12 @@ export const Scraper = () => {
   const [homeTeam, setHomeTeam] = useState<Team>({
     id: NaN,
     name: "",
+    divisionId: NaN,
   });
   const [awayTeam, setAwayTeam] = useState<Team>({
     id: NaN,
     name: "",
+    divisionId: NaN,
   });
   const [matchId, setMatchId] = useState(NaN);
   const [missingPlayers, setMissingPlayers] = useState<Player[]>([]);
@@ -154,6 +157,7 @@ export const Scraper = () => {
             matchId={matchId}
             homeTeam={homeTeam}
             awayTeam={awayTeam}
+            divisionId={homeTeam.divisionId}
           />
         </>
       ) : null}

@@ -29,9 +29,15 @@ type PlayerSearchProps = {
   matchId: number;
   homeTeam: Team;
   awayTeam: Team;
+  divisionId: number;
 };
 
-const PlayerSearch = ({ matchId, homeTeam, awayTeam }: PlayerSearchProps) => {
+const PlayerSearch = ({
+  matchId,
+  homeTeam,
+  awayTeam,
+  divisionId,
+}: PlayerSearchProps) => {
   const utils = trpc.useContext();
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 1000);
@@ -91,6 +97,7 @@ const PlayerSearch = ({ matchId, homeTeam, awayTeam }: PlayerSearchProps) => {
                           matchId={matchId}
                           homeTeam={homeTeam}
                           awayTeam={awayTeam}
+                          divisionId={divisionId}
                         />
                       </PopoverContent>
                     </Popover>

@@ -19,26 +19,21 @@ const DivisionSummary = ({ divisionId }: DivisionSummaryProps) => {
   });
 
   return (
-    <div className="grid grid-cols-5 gap-x-8">
-      <Card className="col-span-3 w-full">
-        <CardHeader>
-          <CardTitle>Summary</CardTitle>
-          <CardDescription>
-            Standings from 2023 with total U-23 and U-20 minutes
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {data ? (
-            <DataTable columns={columns} data={data} />
-          ) : (
-            <p>nothing yet</p>
-          )}
-        </CardContent>
-      </Card>
-      <div className="col-span-2">
-        <p>second col</p>
-      </div>
-    </div>
+    <Card className="col-span-3 w-full">
+      <CardHeader>
+        <CardTitle>Summary</CardTitle>
+        <CardDescription>
+          Standings from 2023 with total U-23 and U-20 minutes
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        {data ? (
+          <DataTable columns={columns} data={data} />
+        ) : (
+          <p>nothing yet</p>
+        )}
+      </CardContent>
+    </Card>
   );
 };
 

@@ -31,6 +31,7 @@ type PlayerPopoverFormProps = {
   matchId: number;
   homeTeam: PlayerOrTeam;
   awayTeam: PlayerOrTeam;
+  divisionId: number;
 };
 
 const formSchema = z.object({
@@ -45,6 +46,7 @@ const PlayerMinutePopoverForm = ({
   matchId,
   homeTeam,
   awayTeam,
+  divisionId,
 }: PlayerPopoverFormProps) => {
   const { toast } = useToast();
   const { mutate } = trpc.insertOrUpdatePlayerMinute.useMutation({
@@ -77,6 +79,7 @@ const PlayerMinutePopoverForm = ({
       teamId: values.teamName === homeTeam.name ? homeTeam.id : awayTeam.id,
       matchId: values.matchId,
       minutes: values.minutes,
+      divisionId,
     });
   }
   return (

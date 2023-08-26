@@ -161,6 +161,13 @@ export const appRouter = t.router({
       .groupBy(divisions.id);
     return result;
   }),
+  getDivisionStats: t.procedure
+    .input(
+      z.object({
+        divisionId: z.number(),
+      })
+    )
+    .query(async ({ input }) => {}),
   scrapeMatch: t.procedure
     .input(
       z.object({
@@ -185,6 +192,7 @@ export const appRouter = t.router({
         .select({
           id: teams.id,
           name: teams.name,
+          divisionId: teams.divisionId,
         })
         .from(teams)
         .where(
@@ -198,6 +206,7 @@ export const appRouter = t.router({
         .select({
           id: teams.id,
           name: teams.name,
+          divisionId: teams.divisionId,
         })
         .from(teams)
         .where(
