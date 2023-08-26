@@ -7,7 +7,17 @@ import { z } from 'zod';
 import db from './db/db';
 import { teams, divisions, players, playerMinutes } from './db/schema';
 import { loadMatchHtml } from './helpers/helpers';
-import { and, desc, eq, ilike, inArray, InferModel, sql } from 'drizzle-orm';
+import {
+  and,
+  desc,
+  eq,
+  gte,
+  ilike,
+  inArray,
+  InferModel,
+  lte,
+  sql,
+} from 'drizzle-orm';
 
 const createContext = ({
   req,
@@ -167,7 +177,99 @@ export const appRouter = t.router({
         divisionId: z.number(),
       })
     )
-    .query(async ({ input }) => {}),
+    .query(async ({ input }) => {
+      const sq = db.$with('sq').as(
+        db
+          .select({
+            medianRank: sql<number>`count(${teams.id}/2)`.as('median_rank'),
+          })
+          .from(teams)
+          .where(eq(teams.divisionId, input.divisionId))
+      );
+
+      const topHalf = db.$with('top_half').as(
+        db
+          .select({
+            id: teams.id,
+            u23Minutes: sql<number>`sum(case when ${
+              players.yearOfBirth
+            } >= ${2000} then ${playerMinutes.minutes} else ${0} end)`.as(
+              'u23_minutes'
+            ),
+            u20Minutes: sql<number>`sum(case when ${
+              players.yearOfBirth
+            } >= ${2003} then ${playerMinutes.minutes} else ${0} end)`.as(
+              'u20_minutes'
+            ),
+          })
+          .from(playerMinutes)
+          .innerJoin(players, eq(players.id, playerMinutes.playerId))
+          .innerJoin(teams, eq(teams.id, playerMinutes.teamId))
+          .where(
+            and(
+              lte(
+                teams.leagueRank,
+                sql<number>`(select floor(count(*)/2) from teams where ${teams.divisionId} = ${input.divisionId})`
+              ),
+              eq(teams.divisionId, input.divisionId)
+            )
+          )
+          .groupBy(teams.id)
+      );
+
+      const bottomHalf = db.$with('bottom_half').as(
+        db
+          .select({
+            id: teams.id,
+            u23Minutes: sql<number>`sum(case when ${
+              players.yearOfBirth
+            } >= ${2000} then ${playerMinutes.minutes} else ${0} end)`.as(
+              'u23_minutes'
+            ),
+            u20Minutes: sql<number>`sum(case when ${
+              players.yearOfBirth
+            } >= ${2003} then ${playerMinutes.minutes} else ${0} end)`.as(
+              'u20_minutes'
+            ),
+          })
+          .from(playerMinutes)
+          .innerJoin(players, eq(players.id, playerMinutes.playerId))
+          .innerJoin(teams, eq(teams.id, playerMinutes.teamId))
+          .where(
+            and(
+              gte(
+                teams.leagueRank,
+                sql<number>`(select floor(count(*)/2+1) from teams where ${teams.divisionId} = ${input.divisionId})`
+              ),
+              eq(teams.divisionId, input.divisionId)
+            )
+          )
+          .groupBy(teams.id)
+      );
+
+      const result = await db
+        .with(topHalf, bottomHalf)
+        .select({
+          averageU23MinutesTop:
+            sql<number>`round(avg("top_half".${topHalf.u23Minutes}))`.mapWith(
+              playerMinutes.minutes
+            ),
+          averageU20MinutesTop:
+            sql<number>`round(avg("top_half".${topHalf.u20Minutes}))`.mapWith(
+              playerMinutes.minutes
+            ),
+          averageU23MinutesBottom:
+            sql<number>`round(avg("bottom_half".${bottomHalf.u23Minutes}))`.mapWith(
+              playerMinutes.minutes
+            ),
+          averageU20MinutesBottom:
+            sql<number>`round(avg("bottom_half".${bottomHalf.u20Minutes}))`.mapWith(
+              playerMinutes.minutes
+            ),
+        })
+        .from(sql.raw(`"top_half", "bottom_half"`));
+      return result;
+    }),
   scrapeMatch: t.procedure
     .input(
       z.object({

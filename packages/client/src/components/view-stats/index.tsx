@@ -17,7 +17,7 @@ const ViewStats = () => {
       <h2 className="pb-8 text-3xl font-bold tracking-tight">{viewTitle}</h2>
       {viewMode === 0 ? <DivisionList handleClick={changeView} /> : null}
       {viewMode === 1 || viewMode === 2 ? (
-        <div className="grid grid-cols-5 gap-x-8">
+        <div className="grid grid-cols-8 gap-x-8">
           <DivisionSummary divisionId={viewMode} />
           <DivisionStats divisionId={viewMode} />
         </div>
