@@ -201,6 +201,16 @@ export const appRouter = t.router({
             } >= ${2003} then ${playerMinutes.minutes} else ${0} end)`.as(
               'u20_minutes'
             ),
+            olderMinutes: sql<number>`sum(case when ${
+              players.yearOfBirth
+            } <= 1999 then ${playerMinutes.minutes} else ${0} end)`.as(
+              'older_minutes'
+            ),
+            u22Minutes: sql<number>`sum(case when ${
+              players.yearOfBirth
+            } >= ${2001} then ${playerMinutes.minutes} else ${0} end)`.as(
+              'u22_minutes'
+            ),
           })
           .from(playerMinutes)
           .innerJoin(players, eq(players.id, playerMinutes.playerId))
@@ -231,6 +241,16 @@ export const appRouter = t.router({
             } >= ${2003} then ${playerMinutes.minutes} else ${0} end)`.as(
               'u20_minutes'
             ),
+            olderMinutes: sql<number>`sum(case when ${
+              players.yearOfBirth
+            } <= 1999 then ${playerMinutes.minutes} else ${0} end)`.as(
+              'older_minutes'
+            ),
+            u22Minutes: sql<number>`sum(case when ${
+              players.yearOfBirth
+            } >= ${2001} then ${playerMinutes.minutes} else ${0} end)`.as(
+              'u22_minutes'
+            ),
           })
           .from(playerMinutes)
           .innerJoin(players, eq(players.id, playerMinutes.playerId))
@@ -258,6 +278,14 @@ export const appRouter = t.router({
             sql<number>`round(avg("top_half".${topHalf.u20Minutes}))`.mapWith(
               playerMinutes.minutes
             ),
+          averageOlderMinutesTop:
+            sql<number>`round(avg("top_half".${topHalf.olderMinutes}))`.mapWith(
+              playerMinutes.minutes
+            ),
+          averageU22MinutesTop:
+            sql<number>`round(avg("top_half".${topHalf.u22Minutes}))`.mapWith(
+              playerMinutes.minutes
+            ),
           averageU23MinutesBottom:
             sql<number>`round(avg("bottom_half".${bottomHalf.u23Minutes}))`.mapWith(
               playerMinutes.minutes
@@ -266,9 +294,64 @@ export const appRouter = t.router({
             sql<number>`round(avg("bottom_half".${bottomHalf.u20Minutes}))`.mapWith(
               playerMinutes.minutes
             ),
+          averageOlderMinutesBottom:
+            sql<number>`round(avg("bottom_half".${bottomHalf.olderMinutes}))`.mapWith(
+              playerMinutes.minutes
+            ),
+          averageU22MinutesBottom:
+            sql<number>`round(avg("bottom_half".${bottomHalf.u22Minutes}))`.mapWith(
+              playerMinutes.minutes
+            ),
+          averageU23MinutesTotal:
+            sql<number>`round((avg("top_half".${topHalf.u23Minutes}) + avg("bottom_half".${bottomHalf.u23Minutes})) / 2)`.mapWith(
+              playerMinutes.minutes
+            ),
+          averageU20MinutesTotal:
+            sql<number>`round((avg("top_half".${topHalf.u20Minutes}) + avg("bottom_half".${bottomHalf.u20Minutes})) / 2)`.mapWith(
+              playerMinutes.minutes
+            ),
+          averageOlderMinutesTotal:
+            sql<number>`round((avg("top_half".${topHalf.olderMinutes}) + avg("bottom_half".${bottomHalf.olderMinutes})) / 2)`.mapWith(
+              playerMinutes.minutes
+            ),
+          averageU22MinutesTotal:
+            sql<number>`round((avg("top_half".${topHalf.u22Minutes}) + avg("bottom_half".${bottomHalf.u22Minutes})) / 2)`.mapWith(
+              playerMinutes.minutes
+            ),
         })
         .from(sql.raw(`"top_half", "bottom_half"`));
-      return result;
+
+      const fullMark = Math.max(...Object.values(result[0])) + 500;
+      return [
+        {
+          subject: 'U-23',
+          A: result[0].averageU23MinutesTop,
+          B: result[0].averageU23MinutesBottom,
+          C: result[0].averageU23MinutesTotal,
+          fullMark,
+        },
+        {
+          subject: 'U-20',
+          A: result[0].averageU20MinutesTop,
+          B: result[0].averageU20MinutesBottom,
+          C: result[0].averageU20MinutesTotal,
+          fullMark,
+        },
+        {
+          subject: 'U-22',
+          A: result[0].averageU22MinutesTop,
+          B: result[0].averageU22MinutesBottom,
+          C: result[0].averageU22MinutesTotal,
+          fullMark,
+        },
+        {
+          subject: '1999+',
+          A: result[0].averageOlderMinutesTop,
+          B: result[0].averageOlderMinutesBottom,
+          C: result[0].averageOlderMinutesTotal,
+          fullMark,
+        },
+      ];
     }),
   scrapeMatch: t.procedure
     .input(

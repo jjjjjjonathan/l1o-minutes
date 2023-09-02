@@ -19,7 +19,7 @@ const DivisionSummary = ({ divisionId }: DivisionSummaryProps) => {
   });
 
   return (
-    <Card className="col-span-5 w-full">
+    <Card className="col-span-8 w-full">
       <CardHeader>
         <CardTitle>Summary</CardTitle>
         <CardDescription>
