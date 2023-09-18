@@ -1,12 +1,10 @@
 import { trpc } from "@/utils/trpc";
 import {
   Card,
-  CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 
 type DivisionItemProps = {
   name: string;
@@ -20,7 +18,8 @@ type DivisionListProps = {
 };
 
 export const DivisionList = ({ handleClick }: DivisionListProps) => {
-  const { data, isLoading, isSuccess, isError } = trpc.getDivisions.useQuery();
+  const { data, isLoading, isSuccess, isError } =
+    trpc.divisions.getDivisions.useQuery();
 
   if (isLoading) {
     return <p>LOADING</p>;

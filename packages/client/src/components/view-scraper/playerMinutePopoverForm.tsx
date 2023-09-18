@@ -49,7 +49,7 @@ const PlayerMinutePopoverForm = ({
   divisionId,
 }: PlayerPopoverFormProps) => {
   const { toast } = useToast();
-  const { mutate } = trpc.insertOrUpdatePlayerMinute.useMutation({
+  const { mutate } = trpc.playerMinutes.insertOrUpdatePlayerMinute.useMutation({
     onSuccess: (data) => {
       toast({
         title: "Stats updated!",

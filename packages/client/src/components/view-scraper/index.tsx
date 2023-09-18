@@ -81,7 +81,7 @@ export const Scraper = () => {
   });
   const [matchId, setMatchId] = useState(NaN);
   const [missingPlayers, setMissingPlayers] = useState<Player[]>([]);
-  const { mutate } = trpc.scrapeMatch.useMutation({
+  const { mutate } = trpc.playerMinutes.scrapeMatch.useMutation({
     onSuccess: (data) => {
       toast({
         title: "Match has been scraped!",

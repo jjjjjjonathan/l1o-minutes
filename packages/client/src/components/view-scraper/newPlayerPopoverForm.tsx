@@ -22,13 +22,13 @@ const formSchema = z.object({
 const NewPlayerPopoverForm = () => {
   const utils = trpc.useContext();
   const { toast } = useToast();
-  const { mutate } = trpc.addNewPlayer.useMutation({
+  const { mutate } = trpc.players.addNewPlayer.useMutation({
     onSuccess: (data) => {
       toast({
         title: "Stats updated!",
         description: `${data[0].name} is now in the database for future matches.`,
       });
-      utils.searchForPlayer.invalidate();
+      utils.players.searchForPlayer.invalidate();
     },
   });
   const form = useForm<z.infer<typeof formSchema>>({

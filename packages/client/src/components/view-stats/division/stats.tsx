@@ -21,7 +21,7 @@ type DivisionStatsProps = {
   divisionId: number;
 };
 const DivisionStats = ({ divisionId }: DivisionStatsProps) => {
-  const { data } = trpc.getDivisionStats.useQuery({ divisionId });
+  const { data } = trpc.divisions.getDivisionStats.useQuery({ divisionId });
   return (
     <div className="col-span-4">
       <Card>

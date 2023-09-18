@@ -41,14 +41,14 @@ const PlayerSearch = ({
   const utils = trpc.useContext();
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 1000);
-  const { data, isLoading, isSuccess } = trpc.searchForPlayer.useQuery({
+  const { data, isLoading, isSuccess } = trpc.players.searchForPlayer.useQuery({
     name: debouncedSearchTerm,
   });
 
   useEffect(() => {
     const searchForPlayer = async () => {
       if (debouncedSearchTerm.length >= 3) {
-        utils.searchForPlayer.invalidate();
+        utils.players.searchForPlayer.invalidate();
       }
     };
 

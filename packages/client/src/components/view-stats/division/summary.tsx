@@ -14,7 +14,7 @@ type DivisionSummaryProps = {
 };
 
 const DivisionSummary = ({ divisionId }: DivisionSummaryProps) => {
-  const { data } = trpc.getDivisionSummary.useQuery({
+  const { data } = trpc.divisions.getDivisionSummary.useQuery({
     divisionId,
   });
 
