@@ -1,6 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useSetAtom } from "jotai";
+import { viewAtom } from "../..";
 
 export type TeamRanking = {
   id: number;
@@ -38,11 +40,16 @@ export const columns: ColumnDef<TeamRanking>[] = [
     accessorKey: "name",
     header: "Team",
     cell: ({ row }) => {
+      const setView = useSetAtom(viewAtom);
       return (
         <Button
           variant="link"
           onClick={() => {
-            alert(`clicked on ${row.getValue("name")}`);
+            setView({
+              type: "TEAM",
+              value: row.getValue("id"),
+              title: row.getValue("name"),
+            });
           }}
         >
           {row.getValue("name")}
