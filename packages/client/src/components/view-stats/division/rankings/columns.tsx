@@ -37,6 +37,18 @@ export const columns: ColumnDef<TeamRanking>[] = [
   {
     accessorKey: "name",
     header: "Team",
+    cell: ({ row }) => {
+      return (
+        <Button
+          variant="link"
+          onClick={() => {
+            alert(`clicked on ${row.getValue("name")}`);
+          }}
+        >
+          {row.getValue("name")}
+        </Button>
+      );
+    },
   },
   {
     accessorKey: "totalU23Minutes",
