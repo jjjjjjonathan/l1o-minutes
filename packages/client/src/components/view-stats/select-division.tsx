@@ -8,13 +8,13 @@ import {
 
 type DivisionItemProps = {
   name: string;
-  handleClick: (view: number, title: string) => void;
+  handleClick: (view: number, name: string) => void;
   id: number;
   matchesCount: number;
 };
 
 type DivisionListProps = {
-  handleClick: (view: number, title: string) => void;
+  handleClick: (view: number, name: string) => void;
 };
 
 export const DivisionList = ({ handleClick }: DivisionListProps) => {

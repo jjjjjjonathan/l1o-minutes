@@ -45,11 +45,15 @@ export const columns: ColumnDef<TeamRanking>[] = [
         <Button
           variant="link"
           onClick={() => {
-            setView({
-              type: "TEAM",
-              value: row.getValue("id"),
-              title: row.getValue("name"),
-            });
+            setView((prev) => [
+              ...prev,
+              {
+                type: "TEAM",
+                value: row.getValue("id"),
+                title: row.getValue("name"),
+                breadcrumbText: row.getValue("name"),
+              },
+            ]);
           }}
         >
           {row.getValue("name")}
