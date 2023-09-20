@@ -8,7 +8,7 @@ export const teamsRouter = createTRPCRouter({
   getSingleTeam: publicProcedure
     .input(
       z.object({
-        id: z.number().min(1)
+        id: z.number().min(1),
       })
     )
     .query(async ({ input }) => {
@@ -22,7 +22,7 @@ export const teamsRouter = createTRPCRouter({
   getPlayersFromTeam: publicProcedure
     .input(
       z.object({
-        id: z.number().min(1)
+        id: z.number().min(1),
       })
     )
     .query(async ({ input }) => {
@@ -39,14 +39,14 @@ export const teamsRouter = createTRPCRouter({
           } >= ${2000} then ${true} else ${false} end`,
           isU20: sql<boolean>`case when ${
             players.yearOfBirth
-          } >= ${2003} then ${true} else ${false} end`
+          } >= ${2003} then ${true} else ${false} end`,
         })
         .from(playerMinutes)
         .innerJoin(players, eq(players.id, playerMinutes.playerId))
         .innerJoin(teams, eq(teams.id, playerMinutes.teamId))
         .where(eq(teams.id, input.id))
         .groupBy(players.id)
-        .orderBy(sql.raw('total_minutes'));
+        .orderBy(sql.raw('total_minutes desc'));
       return result;
-    })
+    }),
 });

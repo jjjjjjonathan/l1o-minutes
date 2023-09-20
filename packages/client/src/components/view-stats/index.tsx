@@ -3,6 +3,7 @@ import DivisionSummary from "./division/summary";
 import DivisionStats from "./division/stats";
 import { atom, useAtom } from "jotai";
 import { Button } from "../ui/button";
+import TeamView from "./team";
 
 type View = {
   type: "HOME" | "DIVISION" | "TEAM" | "MATCH";
@@ -95,6 +96,7 @@ const ViewStats = () => {
           <DivisionSummary divisionId={currentView.value} />
         </div>
       ) : null}
+      {currentView.type === "TEAM" ? <TeamView id={currentView.value} /> : null}
     </>
   );
 };
