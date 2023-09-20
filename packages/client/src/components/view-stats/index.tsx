@@ -76,7 +76,7 @@ const ViewStats = () => {
       <ul className="flex flex-row items-center gap-x-2">
         {viewState.map((view, i, row) => (
           <BreadcrumbItem
-            key={view.value}
+            key={`${view.type}-${view.value}`}
             breadcrumbText={view.breadcrumbText}
             value={view.value}
             onClick={handleNavigationBreadcrumb}

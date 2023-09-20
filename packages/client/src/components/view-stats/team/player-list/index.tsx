@@ -13,8 +13,12 @@ type PlayerListProps = {
   id: number;
 };
 const PlayerList = ({ id }: PlayerListProps) => {
-  const { data } = trpc.teams.getPlayersFromTeam.useQuery({ id });
-
+  const { data, isError, error } = trpc.teams.getPlayersFromTeam.useQuery({
+    id,
+  });
+  if (isError) {
+    return <p>{error.message}</p>;
+  }
   if (data) {
     return (
       <Card className="col-span-8 w-full">

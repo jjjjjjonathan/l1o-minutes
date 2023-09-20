@@ -3,6 +3,7 @@ import { z } from 'zod';
 import db from '../db/db';
 import { teams, players, playerMinutes } from '../db/schema';
 import { eq, sql } from 'drizzle-orm';
+import { TRPCError } from '@trpc/server';
 
 export const teamsRouter = createTRPCRouter({
   getSingleTeam: publicProcedure
@@ -47,6 +48,30 @@ export const teamsRouter = createTRPCRouter({
         .where(eq(teams.id, input.id))
         .groupBy(players.id)
         .orderBy(sql.raw('total_minutes desc'));
+      return result;
+    }),
+
+  getTotalMinutesByBirthYear: publicProcedure
+    .input(
+      z.object({
+        id: z.number().min(1),
+      })
+    )
+    .query(async ({ input }) => {
+      const result = await db
+        .select({
+          yearOfBirth: players.yearOfBirth,
+          totalMinutes: sql<number>`sum(${playerMinutes.minutes})`.mapWith(
+            playerMinutes.minutes
+          ),
+        })
+        .from(playerMinutes)
+        .innerJoin(players, eq(players.id, playerMinutes.playerId))
+        .innerJoin(teams, eq(teams.id, playerMinutes.teamId))
+        .where(eq(teams.id, input.id))
+        .orderBy(players.yearOfBirth)
+        .groupBy(players.yearOfBirth);
+
       return result;
     }),
 });
