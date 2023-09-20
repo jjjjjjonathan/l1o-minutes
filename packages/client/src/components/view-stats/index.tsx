@@ -34,11 +34,14 @@ const BreadcrumbItem = ({
   isLast,
 }: BreadcrumbItemProps) => {
   return (
-    <li>
-      <Button variant="link" disabled={isLast} onClick={() => onClick(value)}>
-        {breadcrumbText}
-      </Button>
-    </li>
+    <>
+      <li>
+        <Button variant="link" disabled={isLast} onClick={() => onClick(value)}>
+          {breadcrumbText}
+        </Button>
+      </li>
+      {!isLast ? <li>/</li> : null}
+    </>
   );
 };
 
@@ -69,7 +72,7 @@ const ViewStats = () => {
 
   return (
     <>
-      <ul className="flex flex-row gap-x-4">
+      <ul className="flex flex-row items-center gap-x-2">
         {viewState.map((view, i, row) => (
           <BreadcrumbItem
             key={view.value}
