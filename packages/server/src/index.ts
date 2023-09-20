@@ -5,6 +5,7 @@ import * as trpcExpress from '@trpc/server/adapters/express';
 import { divisionsRouter } from './routers/divisions';
 import { playersRouter } from './routers/players';
 import { playerMinutesRouter } from './routers/playerMinutes';
+import { teamsRouter } from './routers/teams';
 import { createTRPCRouter } from './trpc';
 import { createContext } from './trpc';
 
@@ -12,6 +13,7 @@ export const appRouter = createTRPCRouter({
   divisions: divisionsRouter,
   players: playersRouter,
   playerMinutes: playerMinutesRouter,
+  teams: teamsRouter
 });
 
 export type AppRouter = typeof appRouter;
@@ -25,7 +27,7 @@ app.use(
   '/trpc',
   trpcExpress.createExpressMiddleware({
     router: appRouter,
-    createContext,
+    createContext
   })
 );
 
