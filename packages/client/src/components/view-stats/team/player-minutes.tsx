@@ -5,6 +5,7 @@ import {
   YAxis,
   CartesianGrid,
   ResponsiveContainer,
+  Tooltip,
 } from "recharts";
 import {
   Card,
@@ -46,7 +47,12 @@ const PlayerMinutesForTeam = ({ id }: PlayerMinutesForTeamProps) => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="yearOfBirth" />
                 <YAxis />
-                <Bar dataKey="totalMinutes" fill="#82ca9d" />
+                <Bar
+                  dataKey="totalMinutes"
+                  name="Total Minutes"
+                  fill="#82ca9d"
+                />
+                <Tooltip contentStyle={{ backgroundColor: "#020817" }} />
               </BarChart>
             </ResponsiveContainer>
           ) : (
