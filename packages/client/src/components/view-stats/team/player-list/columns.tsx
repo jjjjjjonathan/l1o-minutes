@@ -72,7 +72,7 @@ export const columns: ColumnDef<Player>[] = [
     cell: ({ row }) => {
       return (
         <div className="text-right font-medium">
-          {row.getValue("totalMinutes")}
+          {row.original.totalMinutes.toLocaleString()}
         </div>
       );
     },

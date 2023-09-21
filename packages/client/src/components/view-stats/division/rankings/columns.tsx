@@ -79,7 +79,7 @@ export const columns: ColumnDef<TeamRanking>[] = [
     cell: ({ row }) => {
       return (
         <div className="text-right font-medium">
-          {row.getValue("totalU23Minutes")}
+          {row.original.totalU23Minutes.toLocaleString()}
         </div>
       );
     },
@@ -102,7 +102,7 @@ export const columns: ColumnDef<TeamRanking>[] = [
     cell: ({ row }) => {
       return (
         <div className="text-right font-medium">
-          {row.getValue("totalU20Minutes")}
+          {row.original.totalU20Minutes.toLocaleString()}
         </div>
       );
     },
