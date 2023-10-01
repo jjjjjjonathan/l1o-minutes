@@ -2,7 +2,7 @@ import { createTRPCRouter, publicProcedure } from '../trpc';
 import { z } from 'zod';
 import db from '../db/db';
 import { teams, divisions, players, playerMinutes } from '../db/schema';
-import { eq, sql, and, lte, gte } from 'drizzle-orm';
+import { eq, sql, and, lte, gte, inArray } from 'drizzle-orm';
 
 export const divisionsRouter = createTRPCRouter({
   getDivisions: publicProcedure.query(async () => {
@@ -225,5 +225,32 @@ export const divisionsRouter = createTRPCRouter({
           fullMark,
         },
       ];
+    }),
+  getReserveStats: publicProcedure
+    .input(z.object({ divisionId: z.number().min(3) }))
+    .query(async ({ input }) => {
+      const sq = db
+        .selectDistinct({
+          playerId: playerMinutes.playerId,
+        })
+        .from(playerMinutes)
+        .where(
+          eq(playerMinutes.divisionId, input.divisionId % 2 === 0 ? 2 : 1)
+        );
+      const result = await db
+        .selectDistinct({
+          id: players.id,
+          name: players.name,
+        })
+        .from(players)
+        .innerJoin(playerMinutes, eq(playerMinutes.playerId, players.id))
+        .where(
+          and(
+            inArray(players.id, sq),
+            eq(playerMinutes.divisionId, input.divisionId)
+          )
+        )
+        .orderBy(players.id);
+      return result;
     }),
 });

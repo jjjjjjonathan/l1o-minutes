@@ -4,6 +4,7 @@ import DivisionStats from "./division/stats";
 import { atom, useAtom } from "jotai";
 import { Button } from "../ui/button";
 import TeamView from "./team";
+import ReserveStats from "./division/reserve-stats";
 
 type View = {
   type: "HOME" | "DIVISION" | "TEAM" | "MATCH";
@@ -92,8 +93,14 @@ const ViewStats = () => {
       ) : null}
       {currentView.type === "DIVISION" ? (
         <div className="grid grid-cols-8 gap-8">
-          <DivisionStats divisionId={currentView.value} />
-          <DivisionSummary divisionId={currentView.value} />
+          {currentView.value <= 2 ? (
+            <>
+              <DivisionStats divisionId={currentView.value} />
+              <DivisionSummary divisionId={currentView.value} />
+            </>
+          ) : (
+            <ReserveStats divisionId={currentView.value} />
+          )}
         </div>
       ) : null}
       {currentView.type === "TEAM" ? <TeamView id={currentView.value} /> : null}
